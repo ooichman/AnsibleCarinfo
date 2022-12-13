@@ -1,0 +1,5 @@
+---
+- name: Run the hellogo image
+  hosts: localhost
+  roles:
+  - carinfo

@@ -1,0 +1,51 @@
+---
+# tasks file for carinfo
+- name: create a presistent storage for Mariadb Database
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'mariadb-pvc.yaml.j2') | from_yaml }}"
+    namespace: "{{ namespace }}"
+
+- name: create a Service for Mariadb Database
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'mariadb-svc.yaml.j2') | from_yaml }}"
+    namespace: "{{ namespace }}"
+
+- name: Deploying the Mariadb Database using kubernetes deployment
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'mariadb-deployment.yaml.j2') | from_yaml }}"
+    namespace: "{{ namespace }}"
+
+- name: Sleep for 10 seconds to allow the database to start
+  ansible.builtin.wait_for:
+    timeout: 10
+
+- name: Deploying the dbapi back-end Application using kubernetes deployment
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'dbapi-deployment.yaml.j2') | from_yaml }}"
+    namespace: "{{ namespace }}"
+
+- name: Deploying the dbapi back-end Application service
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'dbapi-svc.yaml.j2') | from_yaml }}"
+    namespace: "{{ namespace }}"
+
+- name: Sleep for 2 seconds to allow the database to start
+  ansible.builtin.wait_for:
+    timeout: 2
+
+- name: Deploying the frontend Application using kubernetes deployment
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'frontend-deployment.yaml.j2') | from_yaml }}"
+    namespace: "{{ namespace }}"
+
+- name: Deploying the frontend Application service
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'frontend-svc.yaml.j2') | from_yaml }}"
+    namespace: "{{ namespace }}"
