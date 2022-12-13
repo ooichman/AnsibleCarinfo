@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "dbapi-{{ app-version }}"
+  name: "dbapi-{{ app_version }}"
 spec:
   ports:
   - port: 8080
   selector:
-    app: "dbapi-{{ app-version }}"
+    app: "dbapi-{{ app_version }}"

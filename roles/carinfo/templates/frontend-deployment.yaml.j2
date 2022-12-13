@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: "frontend-{{ app-version }}"
-    version: "{{ app-version }}"
-  name: "frontend-{{ app-version }}"
+    app: "frontend-{{ app_version }}"
+    version: "{{ app_version }}"
+  name: "frontend-{{ app_version }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "frontend-{{ app-version }}"
+      app: "frontend-{{ app_version }}"
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: "frontend-{{ app-version }}"
+        app: "frontend-{{ app_version }}"
     spec:
       containers:
       - image: quay.io/two.oes/carinfo-frontend:latest
-        name: "frontend-{{ app-version }}"
+        name: "frontend-{{ app_version }}"
         ports:
         - containerPort: 8080

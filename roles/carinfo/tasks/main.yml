@@ -7,6 +7,7 @@
     namespace: "{{ namespace }}"
 
 - name: create a Service for Mariadb Database
+  tags: test
   kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', 'mariadb-svc.yaml.j2') | from_yaml }}"
