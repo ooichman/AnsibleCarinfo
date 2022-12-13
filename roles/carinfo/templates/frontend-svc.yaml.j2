@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: "frontend-{{ app-version }}"
   labels:
-    app: frontend
+    app: "frontend-{{ app-version }}"
 spec:
   ports:
-  - name: frontend
+  - name: "frontend-{{ app-version }}"
     port: 8080
     targetPort: 8080
   - name: frontend-ssl
     port: 8443
     targetPort: 8443
   selector:
-    app: frontend
+    app: "frontend-{{ app-version }}"

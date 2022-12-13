@@ -1,21 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mariadb
+  name: "mariadb-{{ app-version }}"
+  labels:
+    version: "{{ app-version }}"
+    app: "mariadb-{{ app-version }}"
 spec:
   selector:
     matchLabels:
-      app: mariadb
+      app: "mariadb-{{ app-version }}"
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mariadb
+        app: "mariadb-{{ app-version }}"
     spec:
       containers:
       - image: mariadb:latest
-        name: mariadb
+        name: "mariadb-{{ app-version }}"
         env:
         - name: MARIADB_ROOT_PASSWORD
           value: password
@@ -34,4 +37,4 @@ spec:
       volumes:
       - name: mariadb-persistent-storage
         persistentVolumeClaim:
-          claimName: mariadb-pv-claim
+          claimName: "mariadb-pv-claim-{{ app-version }}"

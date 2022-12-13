@@ -2,21 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: dbapi
-  name: dbapi
+    app: "dbapi-{{ app-version }}"
+    version: "{{ app-version }}"
+  name: "dbapi-{{ app-version }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dbapi
+      app: "dbapi-{{ app-version }}"
   template:
     metadata:
       labels:
-        app: dbapi
+        app: "dbapi-{{ app-version }}"
     spec:
       containers:
       - image: quay.io/two.oes/carinfo-dbapi:latest
-        name: dbapi
+        name: "dbapi-{{ app-version }}"
         serviceAccount: default
         serviceAccountName: default
         ports:
