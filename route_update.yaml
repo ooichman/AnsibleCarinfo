@@ -1,0 +1,30 @@
+---
+- name: Run the hellogo image
+  hosts: localhost
+
+  tasks:
+  - name: updating the route
+    kubernetes.core.k8s:
+      state: present
+      definition: 
+        apiVersion: route.openshift.io/v1
+        kind: Route
+        metadata:
+          namespace: "{{ namespace }}"
+          name: frontend
+        spec:
+          host: frontend-carinfo.apps.cluster-tt95s.tt95s.sandbox186.opentlc.com
+          port:
+            targetPort: 8080
+          tls:
+          	insecureEdgeTerminationPolicy: Redirect
+            termination: edge
+          to:
+            kind: Service
+            name: "frontend-{{ old_version }}"
+            weight: 100
+          alternateBackends:
+          - kind: Service
+            name: "frontend-{{ new_version }}"
+            weight: 100
+          wildcardPolicy: None
