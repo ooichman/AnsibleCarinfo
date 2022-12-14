@@ -32,4 +32,4 @@ spec:
         - name: SET_DELAY
           value: "{{ set_delay | default('no') }}"
         - name: DB_HOST
-          value: mariadb
+          value: "mariadb-{{ app_version }}"

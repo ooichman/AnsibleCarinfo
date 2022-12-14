@@ -21,3 +21,6 @@ spec:
         name: "frontend-{{ app_version }}"
         ports:
         - containerPort: 8080
+        env:
+        - name: DBAPI_URL
+          value: "http://dbapi-{{ app_version }}:8080/query"
