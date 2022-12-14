@@ -1,17 +1,17 @@
 ---
-- name: Modifing the route for a blue green deployment
+- name: Run the hellogo image
   hosts: localhost
 
   tasks:
   - name: updating the route
     kubernetes.core.k8s:
       state: present
-      definition: 
+      definition:
         apiVersion: route.openshift.io/v1
         kind: Route
         metadata:
-          namespace: "{{ namespace }}"
           name: frontend
+          namespace: carinfo
         spec:
           host: frontend-carinfo.apps.cluster-tt95s.tt95s.sandbox186.opentlc.com
           port:
@@ -22,8 +22,4 @@
             kind: Service
             name: "frontend-{{ old_version }}"
             weight: 100
-          alternateBackends:
-          - kind: Service
-            name: "frontend-{{ new_version }}"
-            weight: 100
-          wildcardPolicy: None
+  wildcardPolicy: None
