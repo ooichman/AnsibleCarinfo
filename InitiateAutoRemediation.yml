@@ -1,0 +1,51 @@
+# auto-remediation and self-healing with Ansible Automation Platform (Tower)
+---
+-
+  hosts: localhost
+  name: "ansible auto-remediation handler for dynatrace"
+  tasks:
+    # Problem State OPEN
+    - name: "problem state is OPEN"
+      block:
+        # Before auto-remedation
+        -
+          name: "update problem with comment before auto-remediation"
+          when: state == "OPEN"
+          uri:
+            url: https://bae33537.live.dynatrace.com/api/v2/problems/{{ pid }}/comments?Api-Token=dt0c01.V724DJRD4L6K57UK3J5VTQMY.6FRNYNBQVWOFHPP5QPC737HIJOKMRPWOWRNXW5MC4MS34VZHF3GMJOC63CCQLMA2
+            method: POST
+            body:
+              comment: Problem notification received by Ansible Tower.  Attempting to perform auto-remediation.
+              context: Ansible Tower
+            body_format: json
+            status_code: 200
+        - name: "trigger auto-remediation action tasks"
+          block:
+            # Update problem card with auto-remediation action
+            -
+              name: "update problem with comment after finding remediation action"
+              when: state == "OPEN"
+              uri:
+                url: https://bae33537.live.dynatrace.com/api/v2/problems/{{ pid }}/comments?Api-Token=dt0c01.V724DJRD4L6K57UK3J5VTQMY.6FRNYNBQVWOFHPP5QPC737HIJOKMRPWOWRNXW5MC4MS34VZHF3GMJOC63CCQLMA2
+                method: POST
+                body:
+                  comment: "Determined problem remediation action for this problem."
+                  user: "Job {{ tower_job_id }}"
+                  context: Ansible Tower
+                body_format: json
+                status_code: 200
+            # Trigger Ansible auto-remediation action
+            # After auto-remediation is triggered
+            -
+              name: "update problem with comment after remediation"
+              when: state == "OPEN"
+              uri:
+                url: https://bae33537.live.dynatrace.com/api/v2/problems/{{ pid }}/comments?Api-Token=dt0c01.V724DJRD4L6K57UK3J5VTQMY.6FRNYNBQVWOFHPP5QPC737HIJOKMRPWOWRNXW5MC4MS34VZHF3GMJOC63CCQLMA2
+                method: POST
+                body:
+                  comment: "Successfully triggered auto-remediation.  See Ansible Tower Job: '{{ ansible_remediation_response.json.job }}'"
+                  user: "Job {{ tower_job_id }}"
+                  context: Ansible Tower
+                body_format: json
+                status_code: 200
+      when: state == "OPEN"

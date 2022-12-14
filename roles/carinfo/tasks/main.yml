@@ -1,5 +1,18 @@
 ---
 # tasks file for carinfo
+
+- name: "initiate deployment with Ansible"
+  ansible.builtin.uri:
+    url: https://bae33537.live.dynatrace.com/api/v2/events/ingest
+    method: POST
+    headers:
+      content-type: application/json; charset=utf-8
+      Authorization: Api-Token dt0c01.V724DJRD4L6K57UK3J5VTQMY.6FRNYNBQVWOFHPP5QPC737HIJOKMRPWOWRNXW5MC4MS34VZHF3GMJOC63CCQLMA2
+#    body: "{{ lookup('ansible.builtin.file','response.json') }}"
+    body: "{{ lookup('template','response.json') }}"
+    body_format: json
+    status_code: 201
+
 - name: create a presistent storage for Mariadb Database
   kubernetes.core.k8s:
     state: present
@@ -7,7 +20,6 @@
     namespace: "{{ namespace }}"
 
 - name: create a Service for Mariadb Database
-  tags: test
   kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', 'mariadb-svc.yaml.j2') | from_yaml }}"

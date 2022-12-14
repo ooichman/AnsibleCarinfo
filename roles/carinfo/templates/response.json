@@ -1,0 +1,17 @@
+{
+  "eventType": "CUSTOM_DEPLOYMENT",
+  "title": "Car Info New Version Deployment",
+  "entitySelector": "type(PROCESS_GROUP_INSTANCE),tag(\"carinfo\")",
+  "source": "Ansible Tower",
+  "deploymentName": "Car Info Better Version",
+  "timeout": "5",
+  "properties": {
+    "Owner": "Oren",
+    "Approved By": "Gil",
+    "Runs On": "RedHat OpenShift",
+    "deploymentVersion": "{{ app_version }}",
+    "deploymentProject": "carInfo",
+    "source": "Ansible",
+    "Monitored By": "Dynatrace Operator"
+  }
+}
