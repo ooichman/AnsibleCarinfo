@@ -1,5 +1,5 @@
 ---
-- name: Run the hellogo image
+- name: Reverting the route to default state
   hosts: localhost
 
   tasks:
@@ -11,7 +11,7 @@
         kind: Route
         metadata:
           name: frontend
-          namespace: carinfo
+          namespace: "{{ namespace }}"
         spec:
           host: frontend-carinfo.apps.cluster-tt95s.tt95s.sandbox186.opentlc.com
           port:
@@ -22,4 +22,4 @@
             kind: Service
             name: "frontend-{{ old_version }}"
             weight: 100
-  wildcardPolicy: None
+          wildcardPolicy: None
