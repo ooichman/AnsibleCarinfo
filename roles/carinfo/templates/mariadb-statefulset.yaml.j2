@@ -1,24 +1,27 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: "mariadb-{{ app_version }}"
   labels:
     version: "{{ app_version }}"
     app: "mariadb-{{ app_version }}"
 spec:
+  serviceName: "mariadb-{{ app_version }}"
+  replicas: 1
   selector:
     matchLabels:
       app: "mariadb-{{ app_version }}"
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
         app: "mariadb-{{ app_version }}"
     spec:
       containers:
-      - image: mariadb:latest
-        name: "mariadb-{{ app_version }}"
+      - name: "mariadb-{{ app_version }}"
+        image: mariadb
+        ports:
+        - containerPort: 3306
+          name: mariadb-port
         env:
         - name: MARIADB_ROOT_PASSWORD
           value: password
@@ -28,13 +31,14 @@ spec:
           value: CarInfoPass
         - name: MARIADB_DATABASE
           value: carinfo
-        ports:
-        - containerPort: 3306
-          name: mariadb
         volumeMounts:
-        - name: mariadb-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mariadb-persistent-storage
-        persistentVolumeClaim:
-          claimName: "mariadb-pv-claim-{{ app_version }}"
+        - name: "datadir-{{ app_version }}"
+          mountPath: /var/lib/mysql/
+  volumeClaimTemplates:
+  - metadata:
+      name: "datadir-{{ app_version }}"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 500M
